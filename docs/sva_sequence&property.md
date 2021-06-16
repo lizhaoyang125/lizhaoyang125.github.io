@@ -1,22 +1,23 @@
-文章目录
-一、断言简介
+## 文章目录
+### 一、断言简介
 1.1.断言分类——立即断言/并发断言
 1.2.断言的语法结构层次
-二、并发断言序列sequence
+### 二、并发断言序列sequence
 2.1. 关键字(sequence、property)与操作符( |=>、|->)
 2.2. sequence的重复操作符——连续[*n]、非连续[=n]、跟随[->n]
 2.2. sequence序列采样函数——$ rose、$ fell、$ past、$ stable、$ sampled
 2.3. sequence序列操作符——and、intersect、or、first_match、within、throughout、ended
-三、并发断言属性property
+### 三、并发断言属性property
 3.1. assert、assume、cover
 3.2. disable iff 与not用法
 3.3. 多时钟属性
-四、代码示例
-一、断言简介
+### 四、代码示例
+
+### 一、断言简介
    断言是对设计行为属性的描述。它使用描述性语言来描述了设计必须满足的属性。在仿真过程中，如果一个被描述的属性不是期望的那样，那么断言就将失败，或者在仿真过程中，出现了一个不该出现的属性，断言也将失败。
   使用断言的原因：原有的Verilog语言是一种过程性设计语言，在硬件设计过程中不能很好的描述时序行为。而SVA是一种描述性语言，可以很好的描述和控制复杂设计的时序的相关问题，代码简洁，易于维护。基于断言的验证方法（ABV）是对验证的增补，通过白盒验证的方式可以获取设计的意图，提供设计的可观察性，有利于指导验证工作，加快验证进度，保证验证的完备性。 除此之外，断言还可以对总线协议进行定义和验证（AHB/APB）等，相当于一个RTL代码的监视器。
 
-1.1.断言分类——立即断言/并发断言
+#### 1.1.断言分类——立即断言/并发断言
   断言分为立即断言和并发断言。立即断言是非事件性的，断言属性类似if语句中的条件表达式，用于检查表达式的值是否为真，断言失败时必须采用相应的仿真行为，如下语法：
 
 assert_info：assert(expression)
@@ -35,11 +36,8 @@ property  p_shakehand;                 //当行为属性p_shakehand中的条件r
 endproperty
 apshakehand:assert property(p_shakehand);       //1. assert关键字启动断言检查
 1
-2
-3
-4
-5
-1.2.断言的语法结构层次
+
+#### 1.2.断言的语法结构层次
   SVA语法主要分为五个结构层次：
 
 最底层——布尔表达式；
@@ -81,7 +79,7 @@ a1:assert property(@(posedge clk) a |-> p1 );    //关键字assert启动断言�
 7
 8
 9
-2.2. sequence的重复操作符——连续[*n]、非连续[=n]、跟随[->n]
+#### 2.2. sequence的重复操作符——连续[*n]、非连续[=n]、跟随[->n]
 
 
 重复操作符（连续）—— [*n]、 [*min：max] ，用法示例如下：
@@ -119,7 +117,7 @@ endproperty
 5
     
 
-2.3. sequence序列操作符——and、intersect、or、first_match、within、throughout、ended
+#### 2.3. sequence序列操作符——and、intersect、or、first_match、within、throughout、ended
 
 
 and操作符：表示两个序列是匹配的，具有相同的起点，但是他们的结束时间不一致，由长序列的结束点为准。
@@ -134,15 +132,11 @@ sequence burst_rule1;
   $fell(burst_mode) ##0
   (!burst_mode) throughout (##2 ((trdy==0)&&(irdy==0)) [*7]);
 endsequence
-1
-2
-3
-4
-5
+
 
 
 ended关键字：可以测试任意序列是否到达结束点。用法：“序列名.ended”
-三、并发断言属性property
+### 三、并发断言属性property
 3.1. assert、assume、cover
 assert关键字：属性检查，相当于检查器
 assume关键字：将属性当做假设条件，仿真时，验证环境必须满足属性要求，否者必须报错
@@ -152,12 +146,14 @@ cover关键字：收集设计行为的覆盖率。
 3.2. disable iff 与not用法
 disable iff(expression)：当expression为真时，关闭property的序列检查，否则进行检查
 not： 表示not后的序列不能出现
+```
 property  abc(a, b ,c);     //参数化
    disable iff(a==1);    //当a为1时，关闭属性检查
    not @clk (b ##1 c);   //not后的序列不能出现
 endproperty
 env_property：assert property(abc(rst, in, out)) pass_statement; else fail_statement;    
 //statement语句是可选的，当属性为真，执行pass_statement，否则执行fail_statement
+```
 1
 2
 3
@@ -175,7 +171,8 @@ env_property：assert property(abc(rst, in, out)) pass_statement; else fail_stat
 1
 
 
-四、代码示例
+### 四、代码示例
+```
 module sequence_demo();
 
   bit rst_n;
@@ -231,7 +228,8 @@ endproperty
 a1:assert property(@(posedge clk) a |-> p1 );    //启动断言， |-> :表示起因序列和结果序列在同一个周期
 
 endmodule
-1
+
+```
 
 启动脚本编译后：使用Makefile实例三，略微修改all选项即可。
 
